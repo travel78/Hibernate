@@ -63,9 +63,9 @@ public class Main {
 //
 //        factory.close();
         PetDao petDao= new PetDao();
-//        List<Pet> pets = new ArrayList<Pet>();
-//        pets = petDao.getAllOfKind("Cat");
-        Pet pets=petDao.getOneById(20);
+        List<String> pets = new ArrayList<String>();
+        pets = petDao.getNameOfKind("Cat");
+//        Pet pets=petDao.getOneById(20);
         petDao.close();
 
         System.out.println(pets);

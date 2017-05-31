@@ -10,7 +10,7 @@ import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PetDao {
+public class PetDao{
     private SessionFactory factory;
     private Session session;
     private CriteriaBuilder cb;
@@ -23,9 +23,10 @@ public class PetDao {
         session = factory.openSession();
         cb = session.getCriteriaBuilder();
     }
-    public Pet getOneById(int id){
+
+    public Pet getOneById(int id) {
         session.getTransaction().begin();
-        Pet pet=session.find(Pet.class,id);
+        Pet pet = session.find(Pet.class, id);
         session.getTransaction().commit();
         return pet;
     }
@@ -38,15 +39,15 @@ public class PetDao {
         return pets;
     }
 
-    public List<Pet> getAllOfKind(String kind){
+    public List<Pet> getAllOfKind(String kind) {
         List<Pet> pets = new ArrayList<Pet>();
         session.getTransaction().begin();
-        CriteriaQuery<Pet> cq=cb.createQuery(Pet.class);
-        Root<Pet> root= cq.from(Pet.class);
+        CriteriaQuery<Pet> cq = cb.createQuery(Pet.class);
+        Root<Pet> root = cq.from(Pet.class);
         Predicate predicate = cb.equal(root.get("kind"), kind.toLowerCase());
 
         cq.where(predicate);
-        pets= (ArrayList<Pet>) session.createQuery(cq).list();
+        pets = (ArrayList<Pet>) session.createQuery(cq).list();
 
         session.getTransaction().commit();
         return pets;
@@ -57,12 +58,12 @@ public class PetDao {
     public List<Pet> getBetweenAge(int from, int to) {
         List<Pet> pets = new ArrayList<Pet>();
         session.getTransaction().begin();
-        CriteriaQuery<Pet> cq=cb.createQuery(Pet.class);
-        Root<Pet> root= cq.from(Pet.class);
-        Predicate predicate = cb.between(root.<Integer>get("age"), from,to);
+        CriteriaQuery<Pet> cq = cb.createQuery(Pet.class);
+        Root<Pet> root = cq.from(Pet.class);
+        Predicate predicate = cb.between(root.<Integer>get("age"), from, to);
 
         cq.where(predicate);
-        pets= (ArrayList<Pet>) session.createQuery(cq).list();
+        pets = (ArrayList<Pet>) session.createQuery(cq).list();
 
         session.getTransaction().commit();
         return pets;
@@ -77,6 +78,19 @@ public class PetDao {
         session.getTransaction().commit();
     }
 
+    public List<String> getNameOfKind(String kind) {
+        List<String> list = new ArrayList<String>();
+        session.getTransaction().begin();
+        CriteriaQuery<String> cq = cb.createQuery(String.class);
+        Root<Pet> root = cq.from(Pet.class);
+        cq.select(root.<String>get("name"));
+        Predicate predicate = cb.equal(root.get("kind"), kind);
+
+        cq.where(predicate);
+        list=session.createQuery(cq).getResultList();
+        session.getTransaction().commit();
+        return list;
+    }
 
     public void close() {
         session.close();
